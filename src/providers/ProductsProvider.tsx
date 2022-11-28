@@ -20,6 +20,8 @@ interface ProductsProviderProps {
 
 interface ProductsContextData {
   products: Product[];
+  currentEditingProductId: string;
+  getCurrentProduct: (productId: string) => void;
   addProductToList: (product: ProductInput) => void;
   editProduct: (productId: string, product: ProductInput) => void;
   removeProduct: (productId: string) => void;
@@ -30,6 +32,7 @@ const ProductsContext = createContext({} as ProductsContextData);
 
 export function ProductsProvider({ children }: ProductsProviderProps) {
   const [products, setProducts] = useState<Product[]>(localStorage.getItem('@grocelist:products') ? JSON.parse(localStorage.getItem('@grocelist:products')!) : []);
+  const [currentEditingProductId, setCurrentEditingProductId] = useState("");
 
 
   function addProductToList(product: ProductInput) {
@@ -40,6 +43,10 @@ export function ProductsProvider({ children }: ProductsProviderProps) {
     const newProductsList = [...products, newProduct];
     setProducts(newProductsList);
     localStorage.setItem('@grocelist:products', JSON.stringify(newProductsList));
+  }
+
+  function getCurrentProduct(productId: string) {
+    setCurrentEditingProductId(productId);
   }
 
   function editProduct(productId: string, product: ProductInput) {
@@ -70,6 +77,8 @@ export function ProductsProvider({ children }: ProductsProviderProps) {
   return (
     <ProductsContext.Provider value={{
       products,
+      currentEditingProductId,
+      getCurrentProduct,
       addProductToList,
       editProduct,
       removeProduct,
