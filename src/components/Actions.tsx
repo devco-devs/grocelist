@@ -52,7 +52,7 @@ export function Actions() {
   }
 
   function maskPrice(value: string) {
-    if (!value) return undefined;
+    if (!value) return "";
     return `R$ ${value.replace(/\D/g, "").replace(/(\d{1,2})$/, ",$1").replace(/(?=(\d{3})+(\D))\B/g, ".")}`;
   }
 
@@ -77,7 +77,7 @@ export function Actions() {
           className="px-3 py-2 w-full rounded-md placeholder:text-gray-600"
         />
         <div className="flex gap-2 max-w-[140px]">
-          <button className="flex items-center justify-center text-white px-2 bg-red-500 rounded-md" onClick={() => setQuantity(p => {
+          <button className="flex items-center justify-center text-white px-2 bg-red-500 rounded-md hover:bg-red-600 transition-colors" onClick={() => setQuantity(p => {
             if (p <= 1) {
               return 1
             } else {
@@ -87,7 +87,7 @@ export function Actions() {
             <Minus weight="bold" size={14} />
           </button>
           <span>{quantity}</span>
-          <button className="flex items-center justify-center text-white px-2 bg-emerald-400 rounded-md" onClick={() => setQuantity(p => p + 1)}>
+          <button className="flex items-center justify-center text-white px-2 bg-emerald-400 rounded-md hover:bg-emerald-500 transition-colors" onClick={() => setQuantity(p => p + 1)}>
             <Plus weight="bold" size={14} />
           </button>
         </div>
@@ -97,14 +97,14 @@ export function Actions() {
           <>
             <button
               onClick={handleEditProduct}
-              className="flex items-center justify-center gap-1 bg-emerald-500 px-3 py-2 rounded-md text-white w-full md:w-1/6"
+              className="flex items-center justify-center gap-1 bg-emerald-400 px-3 py-2 rounded-md text-white w-full md:w-1/6 hover:bg-emerald-500 transition-colors"
             >
               <Pencil size={18} className="leading-none" />
               SALVAR
             </button>
             <button
               onClick={handleCancelEditing}
-              className="flex items-center justify-center gap-1 bg-red-500 px-3 py-2 rounded-md text-white w-full md:w-1/6"
+              className="flex items-center justify-center gap-1 bg-red-500 px-3 py-2 rounded-md text-white w-full md:w-1/6 hover:bg-red-600 transition-colors"
             >
               CANCELAR
             </button>
@@ -112,10 +112,10 @@ export function Actions() {
         ) : (
           <button
             onClick={currentEditingProductId ? handleEditProduct : handleAddProduct}
-            className="flex items-center justify-center gap-1 bg-emerald-500 px-3 py-2 rounded-md text-white w-full md:w-1/6"
+            className="flex items-center justify-center gap-1 bg-emerald-400 px-3 py-2 rounded-md text-white w-full md:w-1/6 hover:bg-emerald-500 transition-colors"
           >
             <PlusCircle size={18} className="leading-none" />
-            {currentEditingProductId ? "SALVAR" : "ADICIONAR"}
+            ADICIONAR
           </button>
         )
       }
