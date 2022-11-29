@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import { v4 } from 'uuid'
+import { v4 } from 'uuid';
 
 interface Product {
   id: string;
