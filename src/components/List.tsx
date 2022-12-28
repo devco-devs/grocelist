@@ -7,38 +7,42 @@ import { Empty } from "./Empty";
 
 export function List() {
   const [productInCart, setProductInCart] = useState<string[]>([]);
-  const { products, getCurrentProduct, removeProduct } = useProducts();
+  const { products, getCurrentProduct, removeProduct, checkProduct } = useProducts();
   const total = products?.reduce((acc, item) => acc + (item.price * item.quantity), 0) ?? 0;
 
   function addProductToCart(productId: string) {
     setProductInCart([...productInCart, productId]);
   }
 
-  function handleProductInCart(productId: string) {
-    if (productInCart.includes(productId)) {
-      const newProductInCart = productInCart.filter(item => item !== productId);
-      setProductInCart(newProductInCart);
-    } else {
-      addProductToCart(productId);
-    }
-  }
-
   function isProductInCart(productId: string) {
     return productInCart.includes(productId);
   }
-
 
   if (!products?.length) {
     return <Empty />
   }
 
+  const sortProducts = products?.sort((prod1, prod2) => {
+    if (prod1.checked && !prod2.checked) {
+      return 1;
+    } else if (!prod1.checked && prod2.checked) {
+      return -1;
+    } else {
+      return prod1.product.localeCompare(prod2.product);
+    }
+  });
+  
+
+
+  console.log(sortProducts)
+
   return (
     <div className="mt-20">
-      {products?.map(item => (
+      {sortProducts?.map(item => (
         <div key={item.id} className={`flex items-center w-full odd:bg-gray-300 even:bg-gray-200 px-2`}>
-          <input type="checkbox" onChange={() => handleProductInCart(item.id)} />
-          <div className={`flex items-center w-full max-w-[50%] md:max-w-[70%] p-2 ${isProductInCart(item.id) ? 'line-through' : ''}`}>{item.product}</div>
-          <div className={`flex w-1/12 items-center flex-1p-2 ${isProductInCart(item.id) ? 'line-through' : ''}`}>x {item.quantity}</div>
+          <input type="checkbox" checked={item.checked} onChange={() => checkProduct(item.id)} />
+          <div className={`flex items-center w-full max-w-[50%] md:max-w-[70%] p-2 ${item.checked ? 'line-through' : ''}`}>{item.product}</div>
+          <div className={`flex w-1/12 items-center flex-1p-2 ${item.checked ? 'line-through' : ''}`}>x {item.quantity}</div>
           <div className="flex w-1/6 items-center flex-1 p-2">{convertToReais(item.price)}</div>
 
           <div className="flex items-center gap-2 ">
