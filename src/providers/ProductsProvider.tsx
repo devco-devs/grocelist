@@ -6,6 +6,7 @@ interface Product {
   product: string;
   quantity: number;
   price: number;
+  checked: boolean;
 }
 
 interface ProductInput {
@@ -24,6 +25,7 @@ interface ProductsContextData {
   getCurrentProduct: (productId: string) => void;
   addProductToList: (product: ProductInput) => void;
   editProduct: (productId: string, product: ProductInput) => void;
+  checkProduct: (productId: string) => void;
   removeProduct: (productId: string) => void;
   resetList: () => void;
 }
@@ -38,6 +40,7 @@ export function ProductsProvider({ children }: ProductsProviderProps) {
   function addProductToList(product: ProductInput) {
     const newProduct = {
       id: v4(),
+      checked: false,
       ...product
     }
     const newProductsList = [...products, newProduct];
@@ -55,6 +58,20 @@ export function ProductsProvider({ children }: ProductsProviderProps) {
         return {
           ...item,
           ...product
+        }
+      }
+      return item;
+    });
+    setProducts(newProductsList);
+    localStorage.setItem('@grocelist:products', JSON.stringify(newProductsList));
+  }
+
+  function checkProduct(productId: string) {
+    const newProductsList = products.map(item => {
+      if (item.id === productId) {
+        return {
+          ...item,
+          checked: !item.checked
         }
       }
       return item;
@@ -81,6 +98,7 @@ export function ProductsProvider({ children }: ProductsProviderProps) {
       getCurrentProduct,
       addProductToList,
       editProduct,
+      checkProduct,
       removeProduct,
       resetList
     }}>
