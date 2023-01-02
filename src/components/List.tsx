@@ -18,6 +18,15 @@ export function List() {
     return productInCart.includes(productId);
   }
 
+  function handleEditProduct(itemId: string) {
+    getCurrentProduct(itemId)
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth"
+    });
+  }
+
   if (!products?.length) {
     return <Empty />
   }
@@ -31,10 +40,6 @@ export function List() {
       return prod1.product.localeCompare(prod2.product);
     }
   });
-  
-
-
-  console.log(sortProducts)
 
   return (
     <div className="mt-20">
@@ -46,7 +51,7 @@ export function List() {
           <div className="flex w-1/6 items-center flex-1 p-2">{convertToReais(item.price)}</div>
 
           <div className="flex items-center gap-2 ">
-            <button onClick={() => getCurrentProduct(item.id)}>
+            <button onClick={() => handleEditProduct(item.id)}>
               <Pencil size={20} />
             </button>
             <button onClick={() => removeProduct(item.id)}>
