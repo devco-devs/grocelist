@@ -7,7 +7,7 @@ export function ProductList() {
     <div className="flex flex-col items-end bg-red-500 mt-10">
       <ul className="w-full flex flex-col gap-2">
         {products.map((product) => (
-          <li className="flex bg-green-500" key={product.id}>
+          <li className="flex bg-green-500 text-lg" key={product.id}>
             <span className="bg-white flex-1">{product.name}</span>
             <span className="bg-blue-500 flex justify-center w-1/6">
               {product.price}
@@ -16,12 +16,12 @@ export function ProductList() {
               {product.amount}
             </span>
             <div className="bg-pink-600 w-1/6 flex justify-between px-2 gap-2">
-              <button onClick={() => removeProduct(product.id)}>
-                <TrashSimple />
+              <button onClick={() => {}}>
+                <Pencil size={20} />
               </button>
 
-              <button onClick={() => {}}>
-                <Pencil />
+              <button onClick={() => removeProduct(product.id)}>
+                <TrashSimple size={20} />
               </button>
             </div>
           </li>
