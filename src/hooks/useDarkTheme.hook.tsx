@@ -22,11 +22,19 @@ export function useDarkTheme() {
   }, [])
 
   useEffect(() => {
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+
     if (theme === 'dark') {
       document.documentElement.classList.add('dark')
     } else {
       document.documentElement.classList.remove('dark')
     }
+
+    metaThemeColor &&
+      metaThemeColor.setAttribute(
+        'content',
+        theme === 'dark' ? '#18181b' : '#f4f4f5',
+      )
   }, [theme])
 
   return { theme, toggleDarkMode }
