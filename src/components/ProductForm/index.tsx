@@ -1,36 +1,45 @@
 import { ShoppingCartSimple } from 'phosphor-react'
-import { FormEvent, useState } from 'react'
-import { useProductsStore } from '../store/products.store'
-import { maskPrice } from '../utils/maskPrice'
+import { ChangeEvent, FormEvent, useState } from 'react'
+import { useProductsStore } from '../../store/products.store'
+import { maskPrice } from '../../utils/maskPrice'
+import { Input } from '../Input'
 import { AmountController } from './AmountController'
-import { Input } from './Input'
+
+const INITIAL_STATE = {
+  name: '',
+  amount: 1,
+  price: '',
+}
 
 export function ProductForm() {
   const { addProduct } = useProductsStore()
-  const [product, setProduct] = useState('')
-  const [amount, setAmount] = useState(1)
-  const [price, setPrice] = useState('')
+  const [product, setProduct] = useState(INITIAL_STATE)
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault()
     addProduct({
-      name: product,
-      amount,
-      price: Number(price.replace(/[^0-9]/g, '')),
+      ...product,
+      price: Number(product.price.replace(/[^0-9]/g, '')),
     })
+    setProduct(INITIAL_STATE)
+  }
 
-    setProduct('')
-    setAmount(1)
-    setPrice('')
+  function handleChangeInput(e: ChangeEvent<HTMLInputElement>) {
+    const { name, value } = e.target
+
+    setProduct((prevState) => ({ ...prevState, [name]: value }))
   }
 
   function incrementAmount() {
-    setAmount((p) => p + 1)
+    setProduct((prevState) => ({ ...prevState, amount: prevState.amount + 1 }))
   }
 
   function decrementAmount() {
-    if (amount > 1) {
-      setAmount((p) => p - 1)
+    if (product.amount > 1) {
+      setProduct((prevState) => ({
+        ...prevState,
+        amount: prevState.amount - 1,
+      }))
     }
   }
 
@@ -42,19 +51,21 @@ export function ProductForm() {
       <div className="flex flex-col gap-4 md:flex-row">
         <Input
           required
-          value={product}
-          onChange={(e) => setProduct(e.target.value)}
+          name="name"
+          value={product.name}
+          onChange={handleChangeInput}
           placeholder="Nome do produto"
         />
         <div className="flex gap-2">
           <Input
             required
-            value={maskPrice(price)}
-            onChange={(e) => setPrice(e.target.value)}
+            name="price"
+            value={maskPrice(product.price)}
+            onChange={handleChangeInput}
             placeholder="Preço"
           />
           <AmountController
-            amount={amount}
+            amount={product.amount}
             onAdd={incrementAmount}
             onRemove={decrementAmount}
           />

@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { v4 } from 'uuid'
 
-interface IProduct {
+export interface IProduct {
   id: string
   name: string
   price: number
