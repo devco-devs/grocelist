@@ -6,6 +6,7 @@ export interface IProduct {
   name: string
   price: number
   amount: number
+  checked?: boolean
 }
 
 interface IProductsStore {
@@ -13,6 +14,7 @@ interface IProductsStore {
   addProduct: (product: Omit<IProduct, 'id'>) => void
   removeProduct: (id: string) => void
   updateProduct: (product: IProduct) => void
+  checkProduct: (productId: string) => void
   sumTotalProducts: () => number
 }
 
@@ -25,6 +27,7 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
     const newProduct = {
       ...product,
       id: v4(),
+      checked: false,
     }
     set((state) => ({
       products: [...state.products, newProduct],
@@ -47,6 +50,18 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
       products: state.products.map((p) => (p.id === product.id ? product : p)),
     }))
 
+    const list = get().products
+    localStorage.setItem('@grocelist:products', JSON.stringify(list))
+  },
+
+  checkProduct: (productId) => {
+    set((state) => ({
+      products: state.products.map((product) =>
+        product.id === productId
+          ? { ...product, checked: !product.checked }
+          : product,
+      ),
+    }))
     const list = get().products
     localStorage.setItem('@grocelist:products', JSON.stringify(list))
   },
