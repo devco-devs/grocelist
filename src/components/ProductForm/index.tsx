@@ -76,7 +76,6 @@ export function ProductForm({ product, onSave, onCancel }: ProductFormProps) {
         />
         <div className="flex gap-2">
           <Input
-            required
             name="price"
             value={maskPrice(productData.price)}
             onChange={handleChangeInput}
