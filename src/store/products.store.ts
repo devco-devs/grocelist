@@ -17,6 +17,7 @@ export interface IProductInput {
 
 interface IProductsStore {
   products: IProduct[]
+  resetProducts: (products: IProduct[]) => void
   addProduct: (product: IProductInput) => void
   removeProduct: (id: string) => void
   updateProduct: (productId: string, product: IProductInput) => void
@@ -28,6 +29,10 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
   products: localStorage.getItem('@grocelist:products')
     ? JSON.parse(localStorage.getItem('@grocelist:products')!)
     : [],
+
+  resetProducts: (products) => {
+    set({ products })
+  },
 
   addProduct: (product) => {
     const newProduct = {

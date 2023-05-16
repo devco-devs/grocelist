@@ -18,8 +18,10 @@ const INITIAL_STATE = {
 }
 
 export function ProductForm({ product, onSave, onCancel }: ProductFormProps) {
-  const { addProduct } = useProductsStore()
+  const { addProduct, products, resetProducts } = useProductsStore()
   const [productData, setProductData] = useState(INITIAL_STATE)
+
+  const checkedProducts = products.filter((product) => product.checked)
 
   useEffect(() => {
     if (product) {
@@ -37,6 +39,14 @@ export function ProductForm({ product, onSave, onCancel }: ProductFormProps) {
     }
 
     setProductData(INITIAL_STATE)
+  }
+
+  function handleRemoveCheckedProducts() {
+    const newProducts = products.filter(
+      (product) => !checkedProducts.includes(product),
+    )
+
+    resetProducts(newProducts)
   }
 
   function handleChangeInput(e: ChangeEvent<HTMLInputElement>) {
@@ -96,11 +106,20 @@ export function ProductForm({ product, onSave, onCancel }: ProductFormProps) {
           <span className="md:hidden">{product ? 'Salvar' : 'Adicionar'}</span>
         </button>
 
+        {!onCancel && checkedProducts.length > 0 && (
+          <button
+            onClick={handleRemoveCheckedProducts}
+            className="border border-zinc-200 text-zinc-200 rounded-lg transition-colors hover:bg-zinc-700 hover:text-white p-2"
+          >
+            Remover itens marcados
+          </button>
+        )}
+
         {onCancel && (
           <button
             type="button"
             onClick={onCancel}
-            className="flex items-center justify-center gap-2 min-w-[80px] rounded-lg transition-colors text-white font-semibold bg-red-600 hover:bg-red-700 p-2"
+            className="flex items-center justify-center gap-2 min-w-[80px] rounded-lg transition-colors text-white font-semibold bg-zinc-200 hover:bg-zinc-200 p-2"
           >
             <span>Cancelar</span>
           </button>
