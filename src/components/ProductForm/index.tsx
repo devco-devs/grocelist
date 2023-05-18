@@ -100,7 +100,7 @@ export function ProductForm({ product, onSave, onCancel }: ProductFormProps) {
           <button
             type="button"
             onClick={onCancel}
-            className="flex items-center justify-center gap-2 min-w-[80px] rounded-lg transition-colors text-white font-semibold bg-red-600 hover:bg-red-700 p-2"
+            className="flex items-center justify-center gap-2 min-w-[80px] rounded-lg transition-colors text-white font-semibold bg-red-600 hover:bg-red-600 p-2"
           >
             <span>Cancelar</span>
           </button>

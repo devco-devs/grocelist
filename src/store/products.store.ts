@@ -17,10 +17,11 @@ export interface IProductInput {
 
 interface IProductsStore {
   products: IProduct[]
+  resetProducts: (products: IProduct[]) => void
   addProduct: (product: IProductInput) => void
   removeProduct: (id: string) => void
   updateProduct: (productId: string, product: IProductInput) => void
-  checkProduct: (productId: string) => void
+  checkProduct: (productId: string, value?: boolean) => void
   sumTotalProducts: () => number
 }
 
@@ -28,6 +29,10 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
   products: localStorage.getItem('@grocelist:products')
     ? JSON.parse(localStorage.getItem('@grocelist:products')!)
     : [],
+
+  resetProducts: (products) => {
+    set({ products })
+  },
 
   addProduct: (product) => {
     const newProduct = {
@@ -73,11 +78,11 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
     localStorage.setItem('@grocelist:products', JSON.stringify(list))
   },
 
-  checkProduct: (productId) => {
+  checkProduct: (productId, value) => {
     set((state) => ({
       products: state.products.map((product) =>
         product.id === productId
-          ? { ...product, checked: !product.checked }
+          ? { ...product, checked: value ?? !product.checked }
           : product,
       ),
     }))
