@@ -1,49 +1,59 @@
-import { useState } from 'react'
-import { useProductsStore } from '../../store/products.store'
+import { useProductsStore, type IProduct } from '../../store/products.store'
 import { convertToReais } from '../../utils/converters'
-import { ProductItem } from './ProductItem'
 import { Checkbox } from './Checkbox'
+import { ProductItem } from './ProductItem'
 
 export function ProductList() {
-  const { products, sumTotalProducts } = useProductsStore()
-  const [isAllProductsSelected, setIsAllProductsSelected] = useState(false)
+  const { products, sumTotalProducts, checkProduct } = useProductsStore()
   const totalPrice = sumTotalProducts()
 
-  const sortedProducts = products?.sort((prod1, prod2) => {
-    if (prod1.checked && !prod2.checked) {
-      return 1
-    } else if (!prod1.checked && prod2.checked) {
-      return -1
-    } else {
-      return prod1.name.localeCompare(prod2.name)
-    }
-  })
-
-  function checkAllProducts() {
-    if (isAllProductsSelected) {
-      sortedProducts.forEach((product) => {
-        product.checked = false
-      })
-    } else {
-      sortedProducts.forEach((product) => {
-        product.checked = true
-      })
-    }
+  function sortProducts(products: IProduct[]) {
+    return products?.sort((prod1, prod2) => {
+      if (prod1.checked && !prod2.checked) {
+        return 1
+      } else if (!prod1.checked && prod2.checked) {
+        return -1
+      } else {
+        return prod1.name.localeCompare(prod2.name)
+      }
+    })
   }
 
-  function handleCheckSelectAllProducts() {
-    setIsAllProductsSelected((prev) => !prev)
-    checkAllProducts()
+  const sortedProducts = sortProducts(products)
+
+  const isEveryProductChecked = sortedProducts?.every(
+    (product) => product.checked,
+  )
+  const showRemoveAllChecked = sortedProducts?.some(
+    (product) => product.checked,
+  )
+
+  function handleCheckAllProducts({ type }: { type: 'check' | 'uncheck' }) {
+    sortedProducts?.forEach((product) => {
+      checkProduct(product.id, type === 'check')
+    })
   }
 
   return (
     <div className="flex flex-col items-end mt-10">
-      <div className="flex self-start p-2 items-center mb-8">
-        <Checkbox
-          onCheck={handleCheckSelectAllProducts}
-          defaultChecked={isAllProductsSelected}
-        />
-        <span>Marcar todos os itens</span>
+      <div className="flex items-center justify-between w-full self-start px-2 mb-4">
+        <div className="flex items-center">
+          <Checkbox
+            defaultChecked={isEveryProductChecked}
+            onCheck={() =>
+              handleCheckAllProducts({
+                type: isEveryProductChecked ? 'uncheck' : 'check',
+              })
+            }
+          />
+          {isEveryProductChecked ? 'Desmarcar todos' : 'Marcar todos'}
+        </div>
+
+        {showRemoveAllChecked && (
+          <button className="px-2 py-1 border border-red-500 rounded-md text-red-500 hover:bg-red-500 hover:text-white transition-colors duration-200">
+            Limpar todos os selecionados
+          </button>
+        )}
       </div>
       <ul className="w-full flex flex-col  [&>*:nth-child(odd)]:bg-zinc-300 dark:[&>*:nth-child(odd)]:bg-zinc-800">
         {sortedProducts.map((product) => (
